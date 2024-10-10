@@ -1,0 +1,79 @@
+---
+title: "Data Analysis For Artist: Ed Sheeran"
+subtitle: "Exploring Song Durations Across Ed Sheeran's Albums Using Spotify API"
+author: Qingyang Feng
+thanks: "Code and data are available at: [https://github.com/Fqy10987/Spotify-Data-Analysis.git]"
+date: October 10, 2024
+date-format: long
+abstract: "This paper analyzes the trends in song durations across Ed Sheeran's discography using data from the Spotify API. By visualizing album release dates and song lengths, we explore the variability in his music over time, highlighting shifts in his artistic style."
+format: pdf
+bibliography: references.bib
+---
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+library(here)
+library(tidyverse)
+options(scipen=999)
+```
+
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+ed_sheeran  <- readRDS(here("data","00-raw_data", "ed_sheeran.rds"))
+```
+
+# Introduction
+Music data analysis provides insightful perspectives on artists and their creative trajectories. In this analysis, we focus on Ed Sheeran, a renowned singer-songwriter whose discography spans multiple albums and years. We use R (@citeR) and several key packages to analyze the relationship between the release dates of Ed Sheeran's albums and the duration of his songs.
+
+We retrieved Ed Sheeran's audio data from Spotify's Web API using the spotifyr package (@citespotifyr), which provides a convenient wrapper for interacting with Spotify's extensive dataset. To manage file paths efficiently, we used the here package (@citehere), and for overall project management, usethis (@citeusethis) was employed. The analysis is supported by the tidyverse ecosystem (@citetidyverse), enabling the data transformation and visualization required to gain insights into the dataset.
+
+This paper aims to explore whether any patterns in song duration can be detected across Ed Sheeran’s discography and whether these patterns reveal any interesting trends about his musical evolution.(@alexander2023telling)
+
+# Result 
+The scatter box
+The scatter plot (see in Appendix-A) shows that Ed Sheeran's song durations have generally become more varied over time. While his earlier songs around 2015 tend to cluster around a similar duration, more recent releases show a broader range. Notably, some tracks released after 2020 have durations significantly longer than 400,000 milliseconds, suggesting a shift towards longer compositions in his recent work. This could reflect changes in his creative process, experimentation with different genres, or adaptations to trends in the music industry.
+
+# Discussion
+Duration of Songs Across Ed Sheeran’s Discography
+The boxplot in Figure 1 illustrates the song duration (in milliseconds) for Ed Sheeran's tracks across his albums. Each point represents a track, and the jitter helps to visualize the spread of the song lengths. The x-axis shows the release dates of albums, while the y-axis represents the duration of the songs in milliseconds.
+
+From the plot, it's noticeable that song durations tend to cluster between 200,000 ms and 300,000 ms, which corresponds to 3-5 minutes, a typical duration for popular music tracks. However, there are notable outliers, especially for albums released post-2020, where song durations have increased. These might suggest experimental tracks or collaborations with other artists, potentially extending the standard pop song format.
+
+Interestingly, earlier albums like + and x (multiply) have tightly clustered durations, suggesting a consistent style in terms of song length. In contrast, more recent albums like = (Equals) show a wider variation in song durations, indicating a broader artistic range.
+
+Impact of Release Dates on Song Duration
+There seems to be no significant trend that links the album release date directly to the song length. However, post-2020 albums display more variability in song durations, possibly influenced by changing industry standards or Ed Sheeran’s experimentation as he matured as an artist.
+
+The analysis could be expanded by comparing these trends to other artists of the same genre or even extending the analysis to additional audio features like tempo, energy, and danceability, which would provide a fuller picture of the evolution of Ed Sheeran's music.
+
+# Appendix
+## Appendix-A
+
+```{r}
+#| warning: false
+#| message: false
+#| echo:    false
+ed_sheeran <- as_tibble(ed_sheeran)
+
+ed_sheeran |>
+  mutate(album_release_date = ymd(album_release_date)) |>
+  ggplot(aes(
+    x = album_release_date,
+    y = duration_ms,
+    group = album_release_date
+  )) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.5, width = 0.3, height = 0) +
+  theme_minimal() +
+  labs(
+    x = "Album release date",
+    y = "Duration of song (ms)"
+  )
+```
+\newpage
+# Reference
